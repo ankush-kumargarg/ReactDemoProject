@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { StyleSheet, Text, View, TouchableOpacity, Button, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Button, Image,Permission, PermissionsAndroid, Platform } from 'react-native';
 
 import * as ImagePicker from 'react-native-image-picker';
 
@@ -13,14 +13,38 @@ export default class App extends React.Component {
     super(props);
 
     this.state = {
-
       resourcePath: {},
-
+      permission:false
     };
-
   }
 
-
+ requestCameraPermission = async () => {
+     if(Platform.OS==='android'){
+        try {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.CAMERA,PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+              {
+                title: "Cool Photo App Camera Permission",
+                message:
+                  "Cool Photo App needs access to your camera " +
+                  "so you can take awesome pictures.",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "OK"
+              }
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+             this.setState({
+                 permission:true
+             });
+            } else {
+              console.log("Camera permission denied");
+            }
+          } catch (err) {
+            console.warn(err);
+          }
+     }
+  };
 
   selectFile = () => {
 
@@ -252,7 +276,7 @@ export default class App extends React.Component {
 
  
 
-          <TouchableOpacity onPress={this.cameraLaunch} style={styles.button}  >
+          <TouchableOpacity onPress={this.state.permission ? this.cameraLaunch : this.requestCameraPermission} style={styles.button}  >
 
               <Text style={styles.buttonText}>Launch Camera Directly</Text>
 
