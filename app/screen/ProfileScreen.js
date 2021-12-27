@@ -1,14 +1,25 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Button, Image,Permission, PermissionsAndroid, Platform } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Button, Image,Permission, PermissionsAndroid, Platform, TouchableHighlight } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage' 
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       resourcePath: {},
-      permission:false
+      permission:false,
+      filepath: {
+        data: '',
+        uri: ''
+      },
+      fileData: '',
+      fileUri: '',
+      name:null,
+      email:null,
+      photo:null
     };
+    this.getDetail();
   }
 
  requestCameraPermission = async () => {
@@ -154,26 +165,60 @@ export default class App extends React.Component {
     })
   }  
 
+  renderFileData() {
+    if (this.state.fileData) {
+      return <Image source={{ uri: 'data:image/jpeg;base64,' + this.state.fileData }}
+        style={styles.images}
+      />
+    } else {
+      return <Image source={{uri:'https://i.picsum.photos/id/591/536/354.jpg?hmac=JJufazbV6l8gm7aJ-01jHtioxHo0JJ63J7CsUUl-r80'}}
+        style={styles.images}
+      />
+    }
+  }
+
+  renderFileUri() {
+    if (this.state.fileUri) {
+      return 
+      <TouchableHighlight
+      style={[styles.profileImgContainer, { borderColor: 'green', borderWidth:1 }]} >
+      <Image source={{ uri: this.state.fileUri }} style={styles.profileImg} />
+    </TouchableHighlight>
+    } else {
+      return <TouchableHighlight
+      style={[styles.profileImgContainer, { borderColor: 'green', borderWidth:1 }]} >
+      <Image source={{ uri:this.state.photo }} style={styles.profileImg} />
+    </TouchableHighlight>
+    }
+  }
+ async getDetail (){
+    try{
+      const name=await AsyncStorage.getItem('name');
+      console.log("name",name);
+      this.setState({name: name});
+      const email=await AsyncStorage.getItem('email');
+      console.log("email",email);
+      this.setState({email: email});
+      const photo=await AsyncStorage.getItem('photo');
+      console.log("photo",photo);
+      this.setState({photo: photo});
+      }catch(e){
+      console.log("error",e.message);
+    
+     } 
+  }
+  
+
   render() {
+    
     return (
       <View style={styles.container}>
+        <View>
+           {this.renderFileUri()}
+           <Text style={styles.textStyle}>Name: {this.state.name}</Text>
+           <Text style={styles.textStyle}>Email: {this.state.email}</Text>
+         </View>
         <View style={styles.container}>
-          <Image
-            source={{
-              uri: 'data:image/jpeg;base64,' + this.state.resourcePath.data,
-            }}
-            style={{ width: 100, height: 100 }}
-          />
-          <Image
-            source={{ uri: this.state.resourcePath.uri }}
-            style={{ width: 200, height: 200 }}
-          />
-          <Text style={{ alignItems: 'center' }}>
-            {this.state.resourcePath.uri}
-          </Text>
-          <TouchableOpacity onPress={this.selectFile} style={styles.button}  >
-              <Text style={styles.buttonText}>Select File</Text>
-          </TouchableOpacity>
           <TouchableOpacity onPress={this.state.permission ? this.cameraLaunch : this.requestCameraPermission} style={styles.button}  >
               <Text style={styles.buttonText}>Launch Camera Directly</Text>
           </TouchableOpacity>
@@ -190,11 +235,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 30,
-    alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff'
   },
-
+  textStyle:{
+   marginTop:20,
+   color:'#000000',
+   fontSize:20,
+  },
   button: {
     width: 250,
     height: 60,
@@ -209,6 +257,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 15,
     color: '#fff'
-  }
+  },
+  images: {
+    width: 150,
+    height: 150,
+    borderColor: 'black',
+    borderWidth: 1,
+    marginHorizontal: 3
+  },
+  profileImgContainer: {
+    marginLeft: 8,
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+  },
+  profileImg: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+  },
 
 });
