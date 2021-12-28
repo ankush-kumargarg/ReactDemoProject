@@ -2,19 +2,33 @@ import React, { Component } from 'react';
 import { Text , StatusBar, View, StyleSheet,style,TextInput,Button} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage' 
 import { GoogleSignin,GoogleSigninButton, statusCodes,} from '@react-native-google-signin/google-signin';
+import {useRoute} from '@react-navigation/native';
 
 GoogleSignin.configure({
     webClientId: '29711772311-mj4scrsm585gii6861kcel445ksd99m4.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
     offlineAccess: true,
   });
 
+
+  
 class LoginScreen extends Component {
     constructor(props){
         super(props);
+        console.log("props",props);
+        console.log("props",props.route.params.name);
         this.state={
-          isLogging:false
+          isLogging:false,
+          name:null,
         }
     }
+
+    getRouterParams=()=>{
+      const route = useRoute();
+      const params= route.params.name;
+      this.setState({
+       name:params
+     })
+   }
 
     signIn = async () => {
       console.log("session", await AsyncStorage.getItem('session'));
@@ -60,13 +74,13 @@ class LoginScreen extends Component {
         </View>
         <View style={styles.bottom_container}>
             <View style={styles.inner_container}> 
-              <Text style={styles.login_text}>Login</Text>
+              <Text style={styles.login_text}>Login{this.props.route.params.name}</Text>
               <TextInput style={styles.input_field_style} placeholder='Username'/>
               <TextInput style={styles.input_field_style} placeholder='Password'/>
               <Text onPress={()=>this.props.navigation.navigate('Home')} style={styles.button_style}>Login</Text>
               <GoogleSigninButton style={styles.google_button_style}
               size={GoogleSigninButton.Size.Wide}
-              onPress={this.signIn}/>
+              onPress={() =>{this.state.isLogging==true ? this.props.navigation.navigate('Home') : this.signIn()}}/>
           </View>
         </View>
       </View>

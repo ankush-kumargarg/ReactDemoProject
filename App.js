@@ -20,6 +20,7 @@ function MyDrawer(){
     <Drawer.Navigator>
        <Stack.Screen name="HomeScreen" component={HomeScreen}/>
        <Stack.Screen name="Profile" component={ProfileScreen}/>
+       <Stack.Screen name="Notification" component={NotificationScreen}/>
        <Stack.Screen name="SignOut" component={SignOut}/>
     </Drawer.Navigator>
   );

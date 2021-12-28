@@ -16,18 +16,18 @@ class SplashScreen extends React.Component {
     // Preload data from an external API
     // Preload data using AsyncStorage
     const data = await this.performTimeConsumingTask();
-    console.log("session",await AsyncStorage.getItem('session'));
+    console.log("sessionSplash",await AsyncStorage.getItem('session'));
     if (data !== null) {
         try{
             if(await AsyncStorage.getItem('session')==='true'){
              
                 this.props.navigation.navigate('Home');
             }else{
-                this.props.navigation.navigate('Login');
+                this.props.navigation.navigate('Login',{name:'Ankush'});
             }
         }catch(e){
             console.log("error",e.message);
-            this.props.navigation.navigate('Login');
+            this.props.navigation.navigate('Login',{name:'Ankush'});
         } 
     }
   }

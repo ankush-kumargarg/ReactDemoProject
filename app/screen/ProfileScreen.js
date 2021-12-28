@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Button, Image,Permission, PermissionsAndroid, Platform, TouchableHighlight } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
+import { BottomSheet } from 'react-native-btr';
 import AsyncStorage from '@react-native-async-storage/async-storage' 
 
-export default class App extends React.Component {
+export default class Account extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,9 +18,11 @@ export default class App extends React.Component {
       fileUri: '',
       name:null,
       email:null,
-      photo:null
+      photo:null,
+      visible:false,
     };
     this.getDetail();
+    this.requestCameraPermission();
   }
 
  requestCameraPermission = async () => {
@@ -130,7 +133,7 @@ export default class App extends React.Component {
         this.setState({
           filePath: res,
           fileData: res.data,
-          fileUri: res.uri
+          fileUri: res.assets[0].uri
         });
       }
     });
@@ -155,11 +158,11 @@ export default class App extends React.Component {
         alert(res.customButton);
       } else {
         const source = { uri: res.uri };
-        console.log('response', JSON.stringify(res));
+        console.log('response', JSON.stringify(res.uri));
         this.setState({
           filePath: res,
           fileData: res.data,
-          fileUri: res.uri
+          fileUri:res.assets[0].uri
         });
       }
     })
@@ -178,19 +181,22 @@ export default class App extends React.Component {
   }
 
   renderFileUri() {
-    if (this.state.fileUri) {
-      return 
-      <TouchableHighlight
+      return <TouchableOpacity 
+      onPress={this.toggleBottomNavigationView}
       style={[styles.profileImgContainer, { borderColor: 'green', borderWidth:1 }]} >
-      <Image source={{ uri: this.state.fileUri }} style={styles.profileImg} />
-    </TouchableHighlight>
-    } else {
-      return <TouchableHighlight
-      style={[styles.profileImgContainer, { borderColor: 'green', borderWidth:1 }]} >
-      <Image source={{ uri:this.state.photo }} style={styles.profileImg} />
-    </TouchableHighlight>
-    }
+      <Image source={{ uri:this.state.fileUri }} style={styles.profileImg} />
+    </TouchableOpacity>
   }
+
+  toggleBottomNavigationView = ()=> {
+    //Toggling the visibility state of the bottom sheet
+    if(this.state.visible){
+        this.setState({visible:false})
+      }else{
+        this.setState({visible:true})
+      }
+  }
+
  async getDetail (){
     try{
       const name=await AsyncStorage.getItem('name');
@@ -215,16 +221,84 @@ export default class App extends React.Component {
       <View style={styles.container}>
         <View>
            {this.renderFileUri()}
-           <Text style={styles.textStyle}>Name: {this.state.name}</Text>
-           <Text style={styles.textStyle}>Email: {this.state.email}</Text>
+           
          </View>
         <View style={styles.container}>
-          <TouchableOpacity onPress={this.state.permission ? this.cameraLaunch : this.requestCameraPermission} style={styles.button}  >
-              <Text style={styles.buttonText}>Launch Camera Directly</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.imageGalleryLaunch} style={styles.button}  >
-              <Text style={styles.buttonText}>Launch Image Gallery Directly</Text>
-          </TouchableOpacity>
+          <BottomSheet
+          visible={this.state.visible}
+          //setting the visibility state of the bottom shee
+          onBackButtonPress={this.toggleBottomNavigationView}
+          //Toggling the visibility state
+          onBackdropPress={this.toggleBottomNavigationView}
+          //Toggling the visibility state
+        >
+          {/*Bottom Sheet inner View*/}
+          <View style={styles.bottomNavigationView}>
+            <View style={{
+                flex: 1,
+                width:"100%",
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  padding: 13,
+                  fontSize: 20,
+                  backgroundColor:'white',
+                  width:'100%',
+                  color:'black',
+                  borderTopLeftRadius:10,
+                  borderTopRightRadius:10
+                }}>
+                Select Option 
+              </Text>
+            </View>
+            <View style={{
+                flex: 1,
+                width:"100%",
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+            <TouchableOpacity onPress={() => {this.state.permission==true ? this.cameraLaunch() : this.requestCameraPermission(); this.toggleBottomNavigationView();}} >   
+              <Text
+                style={{
+                  textAlign: 'center',
+                  padding: 13,
+                  fontSize: 20,
+                  backgroundColor:'white',
+                  width:'100%',
+                  color:'black',
+                 
+                }}>
+                Camera
+              </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{
+                flex: 1,
+                width:"100%",
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+            <TouchableOpacity onPress={ () => {this.imageGalleryLaunch();this.toggleBottomNavigationView();}}  >
+              <Text
+                style={{
+                  textAlign: 'center',
+                  padding: 13,
+                  fontSize: 20,
+                  backgroundColor:'white',
+                  width:'100%',
+                  color:'black',
+                  
+                }}>
+                Import from Gallery
+              </Text>
+              </TouchableOpacity>
+            </View>
+            
+          </View>
+        </BottomSheet>
         </View>
       </View>
     );
@@ -275,6 +349,15 @@ const styles = StyleSheet.create({
     height: 80,
     width: 80,
     borderRadius: 40,
+  },
+  bottomNavigationView: {
+    marginLeft:10,
+    marginRight:10,
+    borderTopLeftRadius:20,
+    borderTopRightRadius:20,
+    height: 165,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
 });
