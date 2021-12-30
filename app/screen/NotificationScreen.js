@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, {useState} from 'react';
 
 // import all the components we are going to use
@@ -20,9 +21,30 @@ export default class Notification extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      visible:false
+      visible:false,
+      userData:[]
     };
+    //this.callApi=this.callApi.bind(this)
   }
+
+  /*componentDidMount(){
+    axios.get('https://jsonplaceholder.typicode.com/todos/1')
+    .then(res=>{
+      const data=res.data;
+      console.log("data",data);
+      this.setState({userData:data})
+    })
+  }*/
+
+  callApi(){
+    axios.get('https://jsonplaceholder.typicode.com/todos/1')
+    .then(res=>{
+      const data=res.data;
+      console.log("data",data);
+      this.setState({userData:data})
+    })
+  }
+
 
  toggleBottomNavigationView = ()=> {
     //Toggling the visibility state of the bottom sheet
@@ -31,26 +53,24 @@ export default class Notification extends React.Component {
     }else{
       this.setState({visible:true})
     }
- 
+  }
+
+  convertBooleanToString=(value)=>{
+    return value.toString();
   }
 
   render(){
     return (
-    
       <View style={styles.container}>
-        <Text
-          style={{
-            fontSize: 20,
-            marginBottom: 20,
-            textAlign: 'center'
-          }}>
-          Example of Bottom Sheet in React Native
-        </Text>
         <Button
-          onPress={this.toggleBottomNavigationView}
+          onPress={this.callApi.bind(this)}
           //on Press of the button bottom sheet will be visible
-          title="Show Bottom Sheet"
+          title="Call Api"
         />
+        <Text>User Id: {this.state.userData.userId}</Text>
+        <Text>Id: {this.state.userData.id}</Text>
+        <Text>Title: {this.state.userData.title}</Text>
+
         <BottomSheet
           visible={this.state.visible}
           //setting the visibility state of the bottom shee
@@ -133,8 +153,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
+   
     backgroundColor: '#E0F7FA',
   },
   bottomNavigationView: {

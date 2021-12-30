@@ -8,6 +8,8 @@ import HomeScreen from './app/screen/HomeScree';
 import NotificationScreen from './app/screen/NotificationScreen';
 import ProfileScreen from './app/screen/ProfileScreen';
 import SplashScreen from './app/screen/SplashScreen';
+import FoodForm from './app/screen/redux/foodForm'
+import FoodList from './app/screen/foodList'
 import AsyncStorage from '@react-native-async-storage/async-storage' 
 import { GoogleSignin,GoogleSigninButton, statusCodes,} from '@react-native-google-signin/google-signin';
 
@@ -21,11 +23,11 @@ function MyDrawer(){
        <Stack.Screen name="HomeScreen" component={HomeScreen}/>
        <Stack.Screen name="Profile" component={ProfileScreen}/>
        <Stack.Screen name="Notification" component={NotificationScreen}/>
+       <Stack.Screen name="foodForm" component={FoodForm}/>
        <Stack.Screen name="SignOut" component={SignOut}/>
     </Drawer.Navigator>
   );
 }
-
 
 function MyStack() {
   return (
@@ -34,6 +36,7 @@ function MyStack() {
        <Stack.Screen name="Splash" component={SplashScreen} options={{headerShown: false}}/>
        <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
        <Stack.Screen name="Home" component={MyDrawer} options={{headerShown: false}}/>
+       <Stack.Screen name="FoodList" component={FoodList}/>
     </Stack.Navigator>
     </NavigationContainer>
   );
