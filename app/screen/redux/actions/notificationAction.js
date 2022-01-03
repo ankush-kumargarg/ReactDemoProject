@@ -3,7 +3,7 @@ import {
   NOTIFICATION_FAIL,
   NOTIFICATION_REQUEST,
   NOTIFICATION_SUCCESS,
-} from '../constant/notificationconstant';
+} from '../const/notificationconstant';
 
 const getNotification =  () =>async dispatch => {
    
