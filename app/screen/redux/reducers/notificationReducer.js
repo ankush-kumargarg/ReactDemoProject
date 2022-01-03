@@ -2,7 +2,7 @@ import {
   NOTIFICATION_FAIL,
   NOTIFICATION_REQUEST,
   NOTIFICATION_SUCCESS,
-} from '../constant/notificationconstant';
+} from '../constant/notificationConstant'
 
 const notificationReducer = (state = {notification: []}, action) => {
   switch (action.type) {

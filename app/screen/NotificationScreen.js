@@ -59,8 +59,7 @@ import getNotification from './redux/actions/notificationAction';
     return (
       <View style={styles.container}>
         <Button
-          onPress={this.callApi.bind(this)}
-          //on Press of the button bottom sheet will be visible
+          onPress={()=>this.callApi()}
           title="Call Api"
         />
         <Text>User Id: {this.props.notification.userId}</Text>
