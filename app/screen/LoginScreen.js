@@ -77,7 +77,7 @@ class LoginScreen extends Component {
               <Text style={styles.login_text}>Login{this.props.route.params.name}</Text>
               <TextInput style={styles.input_field_style} placeholder='Username'/>
               <TextInput style={styles.input_field_style} placeholder='Password'/>
-              <Text onPress={()=>this.props.navigation.navigate('Home')} style={styles.button_style}>Login</Text>
+              <Text onPress={()=>this.props.navigation.replace('Home')} style={styles.button_style}>Login</Text>
               <GoogleSigninButton style={styles.google_button_style}
               size={GoogleSigninButton.Size.Wide}
               onPress={() =>{this.state.isLogging==true ? this.props.navigation.navigate('Home') : this.signIn()}}/>

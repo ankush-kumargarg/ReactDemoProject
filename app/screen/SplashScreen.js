@@ -21,13 +21,13 @@ class SplashScreen extends React.Component {
         try{
             if(await AsyncStorage.getItem('session')==='true'){
              
-                this.props.navigation.navigate('Home');
+                this.props.navigation.replace('Home');
             }else{
-                this.props.navigation.navigate('Login',{name:'Ankush'});
+                this.props.navigation.replace('Login',{name:'Ankush'});
             }
         }catch(e){
             console.log("error",e.message);
-            this.props.navigation.navigate('Login',{name:'Ankush'});
+            this.props.navigation.replace('Login',{name:'Ankush'});
         } 
     }
   }
