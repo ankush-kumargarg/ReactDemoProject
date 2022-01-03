@@ -2,27 +2,23 @@ import axios from 'axios';
 import React, {useState} from 'react';
 
 // import all the components we are going to use
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  Button
-} from 'react-native';
+import {SafeAreaView, StyleSheet, View, Text, Button} from 'react-native';
 
 //import basic react native components
-import { BottomSheet } from 'react-native-btr';
+import {BottomSheet} from 'react-native-btr';
 
 //import to show social icons
-import { SocialIcon } from 'react-native-elements';
+import {SocialIcon} from 'react-native-elements';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import getNotification from './redux/actions/notificationAction';
 
-export default class Notification extends React.Component {
-
-  constructor(props){
+ class Notification extends React.Component {
+  constructor(props) {
     super(props);
-    this.state={
-      visible:false,
-      userData:[]
+    this.state = {
+      visible: false,
+      userData: [],
     };
     //this.callApi=this.callApi.bind(this)
   }
@@ -36,30 +32,30 @@ export default class Notification extends React.Component {
     })
   }*/
 
-  callApi(){
-    axios.get('https://jsonplaceholder.typicode.com/todos/1')
-    .then(res=>{
-      const data=res.data;
-      console.log("data",data);
-      this.setState({userData:data})
-    })
+  callApi() {
+    let { notification, actions } = this.props;
+  
+    actions;
+  
+    console.log(notification)
   }
 
 
- toggleBottomNavigationView = ()=> {
+
+  toggleBottomNavigationView = () => {
     //Toggling the visibility state of the bottom sheet
-    if(this.state.visible){
-      this.setState({visible:false})
-    }else{
-      this.setState({visible:true})
+    if (this.state.visible) {
+      this.setState({visible: false});
+    } else {
+      this.setState({visible: true});
     }
-  }
+  };
 
-  convertBooleanToString=(value)=>{
+  convertBooleanToString = value => {
     return value.toString();
-  }
+  };
 
-  render(){
+  render() {
     return (
       <View style={styles.container}>
         <Button
@@ -67,9 +63,9 @@ export default class Notification extends React.Component {
           //on Press of the button bottom sheet will be visible
           title="Call Api"
         />
-        <Text>User Id: {this.state.userData.userId}</Text>
-        <Text>Id: {this.state.userData.id}</Text>
-        <Text>Title: {this.state.userData.title}</Text>
+        <Text>User Id: {this.props.notification.userId}</Text>
+        <Text>Id: {this.props.notification.id}</Text>
+        <Text>Title: {this.props.notification.title}</Text>
 
         <BottomSheet
           visible={this.state.visible}
@@ -81,9 +77,10 @@ export default class Notification extends React.Component {
         >
           {/*Bottom Sheet inner View*/}
           <View style={styles.bottomNavigationView}>
-            <View style={{
+            <View
+              style={{
                 flex: 1,
-                width:"100%",
+                width: '100%',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}>
@@ -92,18 +89,19 @@ export default class Notification extends React.Component {
                   textAlign: 'center',
                   padding: 13,
                   fontSize: 20,
-                  backgroundColor:'white',
-                  width:'100%',
-                  color:'black',
-                  borderTopLeftRadius:10,
-                  borderTopRightRadius:10
+                  backgroundColor: 'white',
+                  width: '100%',
+                  color: 'black',
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
                 }}>
-                Select Option 
+                Select Option
               </Text>
             </View>
-            <View style={{
+            <View
+              style={{
                 flex: 1,
-                width:"100%",
+                width: '100%',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}>
@@ -112,17 +110,17 @@ export default class Notification extends React.Component {
                   textAlign: 'center',
                   padding: 13,
                   fontSize: 20,
-                  backgroundColor:'white',
-                  width:'100%',
-                  color:'black',
-                 
+                  backgroundColor: 'white',
+                  width: '100%',
+                  color: 'black',
                 }}>
                 Camera
               </Text>
             </View>
-            <View style={{
+            <View
+              style={{
                 flex: 1,
-                width:"100%",
+                width: '100%',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}>
@@ -131,36 +129,50 @@ export default class Notification extends React.Component {
                   textAlign: 'center',
                   padding: 13,
                   fontSize: 20,
-                  backgroundColor:'white',
-                  width:'100%',
-                  color:'black',
-                  
+                  backgroundColor: 'white',
+                  width: '100%',
+                  color: 'black',
                 }}>
                 Import from Gallery
               </Text>
             </View>
-            
           </View>
         </BottomSheet>
       </View>
-  );
+    );
   }
-};
+}
+
+function mapStatesToProps(state) {
+  console.log('state', state);
+  return {
+    notification: state.notification.notification,
+  };
+}
 
 
+const ActionCreators = Object.assign(
+  {},
+  getNotification,
+);
+const mapDispatchToProps = dispatch => ({
+  actions: dispatch(getNotification()),
+});
+
+export default connect(mapStatesToProps,mapDispatchToProps)(Notification)
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 2,
-   
+
     backgroundColor: '#E0F7FA',
   },
   bottomNavigationView: {
-    marginLeft:10,
-    marginRight:10,
-    borderTopLeftRadius:20,
-    borderTopRightRadius:20,
+    marginLeft: 10,
+    marginRight: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     height: 165,
     justifyContent: 'center',
     alignItems: 'center',
