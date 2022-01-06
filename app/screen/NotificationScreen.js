@@ -20,7 +20,7 @@ import getNotification from './redux/actions/notificationAction';
       visible: false,
       userData: [],
     };
-    //this.callApi=this.callApi.bind(this)
+    this.callApi=this.callApi.bind(this);
   }
 
   /*componentDidMount(){
@@ -32,12 +32,12 @@ import getNotification from './redux/actions/notificationAction';
     })
   }*/
 
-  callApi() {
+  callApi(){
     let { notification, actions } = this.props;
   
-    actions;
+    //actions;
   
-    console.log(notification)
+    console.log("notificationssdws",notification)
   }
 
 
@@ -59,7 +59,7 @@ import getNotification from './redux/actions/notificationAction';
     return (
       <View style={styles.container}>
         <Button
-          onPress={()=>this.callApi()}
+          onPress={this.callApi()}
           title="Call Api"
         />
         <Text>User Id: {this.props.notification.userId}</Text>
